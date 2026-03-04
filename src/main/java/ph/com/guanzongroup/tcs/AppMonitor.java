@@ -17,7 +17,7 @@ import ph.com.guanzongroup.tcs.controller.TCSDashBoardController;
 /**
  * JavaFX App
  */
-public class App extends Application {
+public class AppMonitor extends Application {
 
     public final static String pxeMainFormTitle = "Time Commitment Service System";
     public final static String pxeFolderView = "/ph/com/guanzongroup/tcs/view/";
