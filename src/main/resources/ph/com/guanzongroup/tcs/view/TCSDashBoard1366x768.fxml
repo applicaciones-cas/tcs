@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="mainAnchor" styleClass="root" stylesheets="@css/TCSTables1366x768.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+               <center>
+                  <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
+                     <children>
+                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                                                         <children>
+                                                            <Label alignment="CENTER" contentDisplay="TOP" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" opacity="0.79" text="TIME COMMITMENT SERVICE" textFill="#433d3d" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <font>
+                                                                  <Font name="Monospaced Bold" size="36.0" />
+                                                               </font>
+                                                               <graphic>
+                                                                  <ImageView fitHeight="350.0" fitWidth="350.0" opacity="0.84" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@image/app_logotcs.png" />
+                                                                     </image>
+                                                                     <viewport>
+                                                                        <Rectangle2D />
+                                                                     </viewport>
+                                                                  </ImageView>
+                                                               </graphic>
+                                                            </Label>
+                                                            <TableView fx:id="tblJobOrder" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#tblJobOrder_Click" opacity="0.9" scaleShape="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                              <columns>
+                                                                <TableColumn fx:id="tblColNo" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" sortable="false" text="No." />
+                                                                <TableColumn fx:id="tblColJobOrder" editable="false" maxWidth="110.0" minWidth="100.0" prefWidth="110.0" resizable="false" sortable="false" text="JO#" />
+                                                                  <TableColumn fx:id="tblColCustomer" editable="false" maxWidth="170.0" minWidth="170.0" prefWidth="170.0" resizable="false" sortable="false" text="Customer" />
+                                                                  <TableColumn fx:id="tblColMCModel" editable="false" maxWidth="200.0" minWidth="-1.0" prefWidth="180.0" resizable="false" sortable="false" text="MC Model" />
+                                                                  <TableColumn fx:id="tblColMechanic" editable="false" maxWidth="280.0" minWidth="-1.0" prefWidth="150.0" resizable="false" sortable="false" text="Mechanic" />
+                                                                  <TableColumn fx:id="tblColServiceType" editable="false" maxWidth="180.0" minWidth="-1.0" prefWidth="180.0" resizable="false" sortable="false" text="Service Type" />
+                                                                  <TableColumn fx:id="tblColProgress" maxWidth="135.0" minWidth="-1.0" prefWidth="135.0" resizable="false" sortable="false" text="Progress" />
+                                                              </columns>
+                                                               <padding>
+                                                                  <Insets bottom="30.0" left="10.0" />
+                                                               </padding>
+                                                               <opaqueInsets>
+                                                                  <Insets />
+                                                               </opaqueInsets>
+                                                            </TableView>
+                                                         </children>
+                                                      </AnchorPane>
+                                                      <AnchorPane>
+                                                         <children>
+                                                            <Button fx:id="btnRetrieve" mnemonicParsing="false" styleClass="button-primary" text="Retrieve" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <graphic>
+                                                                  <FontAwesomeIconView glyphName="REFRESH" size="15" />
+                                                               </graphic>
+                                                            </Button>
+                                                            <Button fx:id="btnFilter" layoutX="1511.0" layoutY="20.0" mnemonicParsing="false" styleClass="button-primary" text="Remaining" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="0.0">
+                                                               <graphic>
+                                                                  <FontAwesomeIconView glyphName="LIST" size="15" />
+                                                               </graphic>
+                                                            </Button>
+                                                         </children>
+                                                         <VBox.margin>
+                                                            <Insets />
+                                                         </VBox.margin>
+                                                         <padding>
+                                                            <Insets bottom="20.0" right="45.0" top="10.0" />
+                                                         </padding>
+                                                      </AnchorPane>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </VBox>
+                     </children>
+                     <BorderPane.margin>
+                        <Insets bottom="10.0" right="10.0" top="10.0" />
+                     </BorderPane.margin></AnchorPane>
+               </center>
+               <bottom>
+                  <AnchorPane style="-fx-background-color: #1a73e8; -fx-background-radius: 10 10 0 0;" BorderPane.alignment="CENTER">
+                     <children>
+                        <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Label fx:id="lblUser" text="Mac | Michael T. Cusion " textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <graphic>
+                                    <FontAwesomeIconView fill="WHITE" glyphName="USER" size="25" />
+                                 </graphic>
+                                 <font>
+                                    <Font name="Monospaced Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="lblBranch" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="220.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <font>
+                                    <Font name="Monospaced Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Label fx:id="lblVersion" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Guanzon Time Commitment Service" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="0.0">
+                                 <font>
+                                    <Font name="Monospaced Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Label fx:id="lblDateTime" text="February 25, 2026 || 09:47:34" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <graphic>
+                                    <FontAwesomeIconView fill="WHITE" glyphName="CALENDAR" size="15" textAlignment="RIGHT" />
+                                 </graphic>
+                                 <font>
+                                    <Font name="Monospaced Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                     <BorderPane.margin>
+                        <Insets />
+                     </BorderPane.margin>
+                     <padding>
+                        <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+                     </padding>
+                  </AnchorPane>
+               </bottom>
+               <right>
+                  <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="350.0" minWidth="350.0" prefWidth="350.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <VBox spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="dashboard-card" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <Label text="ON-GOING" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <font>
+                                          <Font name="Monospaced Bold" size="24.0" />
+                                       </font>
+                                       <textFill>
+                                          <RadialGradient centerX="0.5944444444444444" centerY="0.961904761904762" radius="0.5">
+                                             <stops>
+                                                <Stop color="BLACK" />
+                                                <Stop color="BLACK" offset="0.007662835249042145" />
+                                                <Stop color="WHITE" offset="1.0" />
+                                             </stops>
+                                          </RadialGradient>
+                                       </textFill>
+                                    </Label>
+                                    <Label fx:id="lblOngoingTime" text="00:30:00:00" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="0.0">
+                                       <font>
+                                          <Font name="Monospaced Bold" size="24.0" />
+                                       </font>
+                                       <textFill>
+                                          <RadialGradient centerX="0.5944444444444444" centerY="0.961904761904762" radius="0.5">
+                                             <stops>
+                                                <Stop color="BLACK" />
+                                                <Stop color="BLACK" offset="0.007662835249042145" />
+                                                <Stop color="WHITE" offset="1.0" />
+                                             </stops>
+                                          </RadialGradient>
+                                       </textFill>
+                                    </Label>
+                                    <Label fx:id="lblOnGoingCount" layoutX="405.0" layoutY="135.0" text="2" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                       <font>
+                                          <Font name="Monospaced Bold" size="24.0" />
+                                       </font>
+                                       <textFill>
+                                          <RadialGradient centerX="0.5944444444444444" centerY="0.961904761904762" radius="0.5">
+                                             <stops>
+                                                <Stop color="BLACK" />
+                                                <Stop color="BLACK" offset="0.007662835249042145" />
+                                                <Stop color="WHITE" offset="1.0" />
+                                             </stops>
+                                          </RadialGradient>
+                                       </textFill>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="dashboard-card" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <Label text="WAITING" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <font>
+                                          <Font name="Monospaced Bold" size="24.0" />
+                                       </font>
+                                       <textFill>
+                                          <RadialGradient centerX="0.5944444444444444" centerY="0.961904761904762" radius="0.5">
+                                             <stops>
+                                                <Stop color="BLACK" />
+                                                <Stop color="BLACK" offset="0.007662835249042145" />
+                                                <Stop color="WHITE" offset="1.0" />
+                                             </stops>
+                                          </RadialGradient>
+                                       </textFill>
+                                    </Label>
+                                    <Label fx:id="lblQueueTime" layoutX="435.0" layoutY="135.0" text="04:30:00:00" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="0.0">
+                                       <font>
+                                          <Font name="Monospaced Bold" size="24.0" />
+                                       </font>
+                                       <textFill>
+                                          <RadialGradient centerX="0.5944444444444444" centerY="0.961904761904762" radius="0.5">
+                                             <stops>
+                                                <Stop color="BLACK" />
+                                                <Stop color="BLACK" offset="0.007662835249042145" />
+                                                <Stop color="WHITE" offset="1.0" />
+                                             </stops>
+                                          </RadialGradient>
+                                       </textFill>
+                                    </Label>
+                                    <Label fx:id="lblQueueCount" text="99" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                       <font>
+                                          <Font name="Monospaced Bold" size="24.0" />
+                                       </font>
+                                       <textFill>
+                                          <RadialGradient centerX="0.5944444444444444" centerY="0.961904761904762" radius="0.5">
+                                             <stops>
+                                                <Stop color="BLACK" />
+                                                <Stop color="BLACK" offset="0.007662835249042145" />
+                                                <Stop color="WHITE" offset="1.0" />
+                                             </stops>
+                                          </RadialGradient>
+                                       </textFill>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="dashboard-card" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <Label text="FINISHED" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <font>
+                                          <Font name="Monospaced Bold" size="24.0" />
+                                       </font>
+                                       <textFill>
+                                          <RadialGradient centerX="0.5944444444444444" centerY="0.961904761904762" radius="0.5">
+                                             <stops>
+                                                <Stop color="BLACK" />
+                                                <Stop color="BLACK" offset="0.007662835249042145" />
+                                                <Stop color="WHITE" offset="1.0" />
+                                             </stops>
+                                          </RadialGradient>
+                                       </textFill>
+                                    </Label>
+                                    <Label fx:id="lblFinishCount" text="1" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                       <font>
+                                          <Font name="Monospaced Bold" size="24.0" />
+                                       </font>
+                                       <textFill>
+                                          <RadialGradient centerX="0.5944444444444444" centerY="0.961904761904762" radius="0.5">
+                                             <stops>
+                                                <Stop color="BLACK" />
+                                                <Stop color="BLACK" offset="0.007662835249042145" />
+                                                <Stop color="WHITE" offset="1.0" />
+                                             </stops>
+                                          </RadialGradient>
+                                       </textFill>
+                                    </Label>
+                                    <Label fx:id="lblFinishTime" layoutX="457.0" layoutY="135.0" text="15:00:00" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="0.0">
+                                       <font>
+                                          <Font name="Monospaced Bold" size="24.0" />
+                                       </font>
+                                       <textFill>
+                                          <RadialGradient centerX="0.5944444444444444" centerY="0.961904761904762" radius="0.5">
+                                             <stops>
+                                                <Stop color="BLACK" />
+                                                <Stop color="BLACK" offset="0.007662835249042145" />
+                                                <Stop color="WHITE" offset="1.0" />
+                                             </stops>
+                                          </RadialGradient>
+                                       </textFill>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <AnchorPane styleClass="form-card" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <GridPane hgap="5.0" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="85.0" minWidth="85.0" prefWidth="85.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <Label text="Job Order No.">
+                                                         <font>
+                                                            <Font name="Monospaced Bold" size="11.0" />
+                                                         </font>
+                                                         <textFill>
+                                                            <RadialGradient centerX="0.5944444444444444" centerY="0.961904761904762" radius="0.5">
+                                                               <stops>
+                                                                  <Stop color="BLACK" />
+                                                                  <Stop color="BLACK" offset="0.007662835249042145" />
+                                                                  <Stop color="BLACK" offset="1.0" />
+                                                               </stops>
+                                                            </RadialGradient>
+                                                         </textFill>
+                                                      </Label>
+                                                      <Label layoutX="10.0" layoutY="43.0" text="Customer" GridPane.rowIndex="1">
+                                                         <font>
+                                                            <Font name="Monospaced Bold" size="11.0" />
+                                                         </font>
+                                                         <textFill>
+                                                            <RadialGradient centerX="0.5944444444444444" centerY="0.961904761904762" radius="0.5">
+                                                               <stops>
+                                                                  <Stop color="BLACK" />
+                                                                  <Stop color="BLACK" offset="0.007662835249042145" />
+                                                                  <Stop color="BLACK" offset="1.0" />
+                                                               </stops>
+                                                            </RadialGradient>
+                                                         </textFill>
+                                                      </Label>
+                                                      <Label layoutX="10.0" layoutY="137.0" text="MC Model" GridPane.rowIndex="2">
+                                                         <font>
+                                                            <Font name="Monospaced Bold" size="11.0" />
+                                                         </font>
+                                                         <textFill>
+                                                            <RadialGradient centerX="0.5944444444444444" centerY="0.961904761904762" radius="0.5">
+                                                               <stops>
+                                                                  <Stop color="BLACK" />
+                                                                  <Stop color="BLACK" offset="0.007662835249042145" />
+                                                                  <Stop color="BLACK" offset="1.0" />
+                                                               </stops>
+                                                            </RadialGradient>
+                                                         </textFill>
+                                                      </Label>
+                                                      <Label layoutX="10.0" layoutY="236.0" text="Mechanic" GridPane.rowIndex="3">
+                                                         <font>
+                                                            <Font name="Monospaced Bold" size="11.0" />
+                                                         </font>
+                                                         <textFill>
+                                                            <RadialGradient centerX="0.5944444444444444" centerY="0.961904761904762" radius="0.5">
+                                                               <stops>
+                                                                  <Stop color="BLACK" />
+                                                                  <Stop color="BLACK" offset="0.007662835249042145" />
+                                                                  <Stop color="BLACK" offset="1.0" />
+                                                               </stops>
+                                                            </RadialGradient>
+                                                         </textFill>
+                                                      </Label>
+                                                      <Label layoutX="10.0" layoutY="249.0" text="Service Type" GridPane.rowIndex="4">
+                                                         <font>
+                                                            <Font name="Monospaced Bold" size="11.0" />
+                                                         </font>
+                                                         <textFill>
+                                                            <RadialGradient centerX="0.5944444444444444" centerY="0.961904761904762" radius="0.5">
+                                                               <stops>
+                                                                  <Stop color="BLACK" />
+                                                                  <Stop color="BLACK" offset="0.007662835249042145" />
+                                                                  <Stop color="BLACK" offset="1.0" />
+                                                               </stops>
+                                                            </RadialGradient>
+                                                         </textFill>
+                                                      </Label>
+                                                      <Label layoutX="10.0" layoutY="256.0" text="Progress" GridPane.rowIndex="5">
+                                                         <font>
+                                                            <Font name="Monospaced Bold" size="11.0" />
+                                                         </font>
+                                                         <textFill>
+                                                            <RadialGradient centerX="0.5944444444444444" centerY="0.961904761904762" radius="0.5">
+                                                               <stops>
+                                                                  <Stop color="BLACK" />
+                                                                  <Stop color="BLACK" offset="0.007662835249042145" />
+                                                                  <Stop color="BLACK" offset="1.0" />
+                                                               </stops>
+                                                            </RadialGradient>
+                                                         </textFill>
+                                                      </Label>
+                                                      <TextField fx:id="txtJobOrder" GridPane.columnIndex="1">
+                                                         <font>
+                                                            <Font name="Monospaced Regular" size="12.0" />
+                                                         </font>
+                                                      </TextField>
+                                                      <TextField fx:id="txtCustomer" layoutX="161.0" layoutY="16.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+                                                         <font>
+                                                            <Font name="Monospaced Regular" size="12.0" />
+                                                         </font>
+                                                      </TextField>
+                                                      <TextField fx:id="txtMCModel" layoutX="10.0" layoutY="16.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+                                                         <font>
+                                                            <Font name="Monospaced Regular" size="12.0" />
+                                                         </font>
+                                                      </TextField>
+                                                      <TextField fx:id="txtMechanic" layoutX="10.0" layoutY="16.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+                                                         <font>
+                                                            <Font name="Monospaced Regular" size="12.0" />
+                                                         </font>
+                                                      </TextField>
+                                                      <TextField fx:id="txtSerivceType" layoutX="161.0" layoutY="161.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                                                         <font>
+                                                            <Font name="Monospaced Regular" size="12.0" />
+                                                         </font>
+                                                      </TextField>
+                                                      <Label fx:id="lblProgress" contentDisplay="CENTER" graphicTextGap="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="ON-QUEUE" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                                         <graphic>
+                                                            <ProgressBar fx:id="pbProgress" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="40.0" prefWidth="140.0" progress="0.11" />
+                                                         </graphic>
+                                                         <font>
+                                                            <Font name="Monospaced Bold" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="lblProgressTime" alignment="CENTER_RIGHT" contentDisplay="CENTER" graphicTextGap="0.0" layoutX="161.0" layoutY="177.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="30:00:00" textAlignment="RIGHT" GridPane.columnIndex="2" GridPane.rowIndex="5">
+                                                         <font>
+                                                            <Font name="Monospaced Bold" size="14.0" />
+                                                         </font>
+                                                         <padding>
+                                                            <Insets right="10.0" />
+                                                         </padding>
+                                                      </Label>
+                                                   </children>
+                                                </GridPane>
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane maxHeight="55.0">
+                                             <children>
+                                                <HBox alignment="CENTER_RIGHT" maxWidth="250.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <Button fx:id="btnStart" mnemonicParsing="false" prefWidth="100.0" styleClass="button-primary" text="START" HBox.hgrow="ALWAYS">
+                                                         <graphic>
+                                                            <FontAwesomeIconView glyphName="PLAY" size="15" />
+                                                         </graphic>
+                                                      </Button>
+                                                      <Button fx:id="btnPause" layoutX="327.0" layoutY="12.0" mnemonicParsing="false" prefWidth="100.0" styleClass="button-primary" text="PAUSE">
+                                                         <graphic>
+                                                            <FontAwesomeIconView fx:id="iconPause" glyphName="PAUSE" size="15" />
+                                                         </graphic>
+                                                      </Button>
+                                                      <Button fx:id="btnFinish" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefWidth="100.0" styleClass="button-primary" text="FINISH" HBox.hgrow="ALWAYS">
+                                                         <graphic>
+                                                            <FontAwesomeIconView glyphName="TAG" size="15" />
+                                                         </graphic>
+                                                      </Button>
+                                                   </children>
+                                                   <padding>
+                                                      <Insets bottom="20.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                </HBox>
+                                             </children>
+                                          </AnchorPane>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </VBox>
+                     </children>
+                     <BorderPane.margin>
+                        <Insets bottom="10.0" right="10.0" top="10.0" />
+                     </BorderPane.margin>
+                  </AnchorPane>
+               </right>
+            </BorderPane>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>

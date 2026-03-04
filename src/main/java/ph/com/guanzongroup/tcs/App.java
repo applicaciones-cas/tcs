@@ -22,41 +22,56 @@ public class App extends Application {
     public final static String pxeMainFormTitle = "Time Commitment Service System";
     public final static String pxeFolderView = "/ph/com/guanzongroup/tcs/view/";
     public final static String pxeMainForm = pxeFolderView + "TCSDashBoard.fxml";
+    public final static String pxeSubForm = pxeFolderView + "TCSDashBoard1366x768.fxml";
     public static GRider oApp;
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader view = new FXMLLoader();
-        view.setLocation(getClass().getResource(pxeMainForm));
 
-        TCSDashBoardController controller = new TCSDashBoardController();
-        controller.setGRider(oApp);
-
-        view.setController(controller);
-        Parent parent = view.load();
-        Scene scene = new Scene(parent);
-
-        //get the screen size
+        // Get screen size FIRST
         Screen screen = Screen.getPrimary();
         Rectangle2D bounds = screen.getVisualBounds();
 
+        double screenWidth = bounds.getWidth();
+        double screenHeight = bounds.getHeight();
+
+        // Choose layout automatically
+        String formToLoad;
+
+        if (screenWidth <= 1366) {
+            formToLoad = pxeSubForm;      // laptop layout
+        } else {
+            formToLoad = pxeMainForm;     // full HD / large monitor
+        }
+
+        FXMLLoader view = new FXMLLoader(getClass().getResource(formToLoad));
+
+        TCSDashBoardController controller = new TCSDashBoardController();
+        controller.setGRider(oApp);
+        view.setController(controller);
+
+        Parent parent = view.load();
+        Scene scene = new Scene(parent);
+
         stage.setScene(scene);
         stage.initStyle(StageStyle.UNDECORATED);
-//        stage.getIcons().add(new Image(pxeStageIcon));
         stage.setTitle(pxeMainFormTitle);
 
-        // set stage as maximized but not full screen
+        // Fit screen exactly
         stage.setX(bounds.getMinX());
         stage.setY(bounds.getMinY());
-        stage.setWidth(bounds.getWidth());
-        stage.setHeight(bounds.getHeight());
+        stage.setWidth(screenWidth);
+        stage.setHeight(screenHeight);
 
-        InputStream iconStream = getClass().getResourceAsStream("/ph/com/guanzongroup/tcs/view/image/app_logotcs.png");
-        Image icon = new Image(iconStream);
-        stage.getIcons().add(icon);
+        // App icon
+        InputStream iconStream
+                = getClass().getResourceAsStream(
+                        "/ph/com/guanzongroup/tcs/view/image/app_logotcs.png");
+
+        stage.getIcons().add(new Image(iconStream));
+
         stage.centerOnScreen();
         stage.show();
-
     }
 
     public static void main(String[] args) {
