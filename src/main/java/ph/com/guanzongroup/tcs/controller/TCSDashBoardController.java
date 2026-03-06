@@ -2,17 +2,12 @@ package ph.com.guanzongroup.tcs.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -20,19 +15,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.Animation;
-import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyBooleanPropertyBase;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -43,18 +34,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
-import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.RecordStatus;
 import ph.com.guanzongroup.cas.joborder.base.JobOrder;
 
@@ -69,6 +56,7 @@ public class TCSDashBoardController implements Initializable {
     private JobOrder oTrans;
 
     private int pnRow = 0;
+    private String psTransNox = "";
     private boolean pbLoaded = false;
     private Date pdPeriod = null;
 
@@ -102,6 +90,18 @@ public class TCSDashBoardController implements Initializable {
     private ScheduledExecutorService autoSaveExecutor;
     private final ObservableList<JobOrderModel> JOList = FXCollections.observableArrayList();
 
+    private PITMonitorListener pitMonitorListener;
+
+    public void setPITMonitorListener(PITMonitorListener listener) {
+        this.pitMonitorListener = listener;
+    }
+
+    private void notifyPITMonitor(String fsTransNox, String fsAction) {
+        if (pitMonitorListener != null) {
+            pitMonitorListener.onJobOrderChanged(fsTransNox, fsAction);
+        }
+    }
+
     private Stage getStage() {
         return (Stage) mainAnchor.getScene().getWindow();
     }
@@ -128,12 +128,30 @@ public class TCSDashBoardController implements Initializable {
         Platform.runLater(() -> {
             Stage stage = getStage();
             stage.setOnCloseRequest(e -> stopAutoSaveThread());
+            try {
+                if (oTrans.RetrieveJobOrderList()) {
+                    loadRecord();
+
+                } else {
+                    ShowMessageFX.Information(getStage(), oTrans.getMessage(), "Information", null);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(TCSDashBoardController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
         pbLoaded = true;
     }
 
     public void setGRider(GRider foValue) {
         oApp = foValue;
+    }
+
+    public JobOrder getJobOrder() {
+        return oTrans;
+    }
+
+    public ObservableList<JobOrderModel> getJobOrderList() {
+        return JOList;
     }
 
     private void initButtonClick() {
@@ -294,6 +312,7 @@ public class TCSDashBoardController implements Initializable {
     private void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
         try {
+            stopAutoSaveThread();
             switch (lsButton) {
                 case "btnRetrieve":
                     if (oTrans.RetrieveJobOrderList()) {
@@ -312,51 +331,53 @@ public class TCSDashBoardController implements Initializable {
                     }
                     break;
                 case "btnStart":
-                    //selection of pit
                     if (oTrans.showPitSelection()) {
-                        //retrieve to refresh it data
                         if (oTrans.RetrieveJobOrderList()) {
                             loadRecord();
                         }
+                        notifyPITMonitor(psTransNox, "STARTED"); // ← tag
                     } else {
-
                         ShowMessageFX.Information(getStage(), oTrans.getMessage(), "Information", null);
                     }
                     break;
+
                 case "btnPause":
-                    //selection of pit
                     if (btnPause.getText().equalsIgnoreCase("resume")) {
                         if (oTrans.ResumeService()) {
-                            //retrieve to refresh it data
                             if (oTrans.RetrieveJobOrderList()) {
                                 loadRecord();
                             }
+                            notifyPITMonitor(psTransNox, "RESUMED"); // ← tag
                         } else {
                             ShowMessageFX.Information(getStage(), oTrans.getMessage(), "Information", null);
                         }
                         break;
                     }
                     if (oTrans.PauseService()) {
-                        //retrieve to refresh it data
                         if (oTrans.RetrieveJobOrderList()) {
                             loadRecord();
                         }
+                        notifyPITMonitor(psTransNox, "PAUSED"); // ← tag
                     } else {
-
                         ShowMessageFX.Information(getStage(), oTrans.getMessage(), "Information", null);
                     }
                     break;
 
                 case "btnFinish":
                     if (oTrans.FinishService()) {
+                        
+                        notifyPITMonitor(psTransNox, "FINISHED");
+                        
+                        
                         if (oTrans.RetrieveJobOrderList()) {
                             loadRecord();
-                        }
+                        } // ← tag
                     } else {
                         ShowMessageFX.Information(getStage(), oTrans.getMessage(), "Information", null);
                     }
                     break;
             }
+            startAutoSaveThread();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -380,56 +401,6 @@ public class TCSDashBoardController implements Initializable {
         } catch (SQLException ex) {
             ShowMessageFX.Warning(getStage(), ex.getMessage(), "Warning", null);
         }
-    }
-
-    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
-        if (!pbLoaded) {
-            return;
-        }
-
-//        try {
-        TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
-        String lsValue = txtField.getText();
-
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lnIndex) {
-
-            }
-        } else { //Focus
-            switch (lnIndex) {
-
-            }
-            txtField.selectAll();
-        }
-//        } catch (SQLException ex) {
-//            Platform.runLater(() -> {
-//                ShowMessageFX.Warning(getStage(), ex.getMessage(), "Catch Error", null);
-//            });
-//
-//        }
-    };
-
-    private void txtField_KeyPressed(KeyEvent event) {
-        TextField txtField = (TextField) event.getSource();
-        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
-        String lsValue = txtField.getText();
-
-        switch (event.getCode()) {
-            case F3:
-                switch (lnIndex) {
-
-                }
-            case ENTER:
-            case DOWN:
-                CommonUtils.SetNextFocus(txtField);
-                break;
-            case UP:
-                CommonUtils.SetPreviousFocus(txtField);
-        }
-//            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
-
     }
 
     private void clearFields() {
@@ -485,15 +456,10 @@ public class TCSDashBoardController implements Initializable {
             startGlobalClock();
             startAutoSaveThread();
 
-//            pbRunning = false;
-//            vbProgress.setVisible(false);
-//            ptTimeline.stop();
         } catch (NullPointerException | SQLException e) {
             Platform.runLater(() -> ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null));
             Logger.getLogger(TCSDashBoardController.class.getName()).log(Level.SEVERE, null, e);
-//            pbRunning = false;
-//            vbProgress.setVisible(false);
-//            ptTimeline.stop();
+
         }
     }
 
@@ -510,6 +476,7 @@ public class TCSDashBoardController implements Initializable {
             return;
         }
 
+        psTransNox = jo.getIndex02();
         if (jo.getIndex10().equals(RecordStatus.ACTIVE)) {
             btnPause.setText("RESUME");
             iconPause.setGlyphName("PLAY");
@@ -662,14 +629,6 @@ public class TCSDashBoardController implements Initializable {
                     // STATUS DISPLAY
                     if (jo.getIndex08() == null || jo.getIndex08().isEmpty()) {
 
-                        if (jo.getIndex12() == null || jo.getIndex12().isEmpty()) {
-                            lblProgress.setText("ON - QUEUE");
-                        } else {
-                            lblProgress.setText("FINISHED");
-                            pbProgress.setProgress(1);
-                            lblProgressTime.setText("");
-                        }
-
                     } else {
                         lblProgress.setText((int) (progress * 100) + "%");
                     }
@@ -759,12 +718,12 @@ public class TCSDashBoardController implements Initializable {
 
         autoSaveExecutor = Executors.newSingleThreadScheduledExecutor();
 
-        autoSaveExecutor.scheduleAtFixedRate(() -> {
+        Platform.runLater(() -> {
+            autoSaveExecutor.scheduleAtFixedRate(() -> {
+                saveServiceBay(); // calls oTrans methods + Platform.runLater only sometimes
+            }, 60, 60, TimeUnit.SECONDS);
 
-            saveServiceBay();
-
-        }, 60, 60, TimeUnit.SECONDS);
-        // delay 60 sec, repeat every 60 sec
+        });
     }
 
     public void stopAutoSaveThread() {

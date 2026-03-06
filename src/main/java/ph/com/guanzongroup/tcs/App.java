@@ -1,17 +1,20 @@
 package ph.com.guanzongroup.tcs;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
-import java.io.InputStream;
-import static javafx.application.Application.launch;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.stage.Screen;
+import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.fxml.FXMLLoader;
+import java.io.InputStream;
+
 import org.guanzon.appdriver.base.GRider;
+import ph.com.guanzongroup.tcs.controller.PITMonitorController;
 import ph.com.guanzongroup.tcs.controller.TCSDashBoardController;
 
 /**
@@ -22,6 +25,7 @@ public class App extends Application {
     public final static String pxeMainFormTitle = "Time Commitment Service System";
     public final static String pxeFolderView = "/ph/com/guanzongroup/tcs/view/";
     public final static String pxeMainForm = pxeFolderView + "TCSDashBoard.fxml";
+    public final static String pxeMainMonitoringForm = pxeFolderView + "PitMonitor.fxml";
     public final static String pxeSubForm = pxeFolderView + "TCSDashBoard1366x768.fxml";
     public static GRider oApp;
 
@@ -37,7 +41,6 @@ public class App extends Application {
 
         // Choose layout automatically
         String formToLoad;
-
         if (screenWidth <= 1366) {
             formToLoad = pxeSubForm;      // laptop layout
         } else {
@@ -45,7 +48,6 @@ public class App extends Application {
         }
 
         FXMLLoader view = new FXMLLoader(getClass().getResource(formToLoad));
-
         TCSDashBoardController controller = new TCSDashBoardController();
         controller.setGRider(oApp);
         view.setController(controller);
@@ -64,14 +66,75 @@ public class App extends Application {
         stage.setHeight(screenHeight);
 
         // App icon
-        InputStream iconStream
-                = getClass().getResourceAsStream(
-                        "/ph/com/guanzongroup/tcs/view/image/app_logotcs.png");
-
+        InputStream iconStream = getClass().getResourceAsStream(
+                "/ph/com/guanzongroup/tcs/view/image/app_logotcs.png");
         stage.getIcons().add(new Image(iconStream));
 
-        stage.centerOnScreen();
+        // Show main stage
         stage.show();
+
+        // Ensure whole app exits when main closes
+        Platform.setImplicitExit(true);
+        stage.setOnCloseRequest(e -> {
+            Platform.exit();   // closes ALL stages
+            System.exit(0);    // guarantees JVM shutdown
+        });
+
+        // =====================================
+        // OPEN CUSTOMER DISPLAY (SECOND MONITOR)
+        // =====================================
+        ObservableList<Screen> screens = Screen.getScreens();
+        if (screens.size() > 1) {
+
+            Screen customerScreen = screens.get(1);
+            Rectangle2D bounds2 = customerScreen.getVisualBounds();
+
+            FXMLLoader viewCustomer = new FXMLLoader(getClass().getResource(pxeMainMonitoringForm));
+            PITMonitorController custController = new PITMonitorController();
+
+            // After both controllers are created
+            controller.setPITMonitorListener(custController);
+
+            // SHARE SAME JOB ORDER INSTANCE
+            custController.setJobOrder(controller.getJobOrder());
+            custController.setJobOrderList(controller.getJobOrderList());
+            viewCustomer.setController(custController);
+            Parent customerRoot = viewCustomer.load();
+
+            Stage customerStage = new Stage();
+            customerStage.initStyle(StageStyle.UNDECORATED);
+
+            // Make customer stage owned by main stage → single taskbar icon
+            customerStage.initOwner(stage);
+
+            customerStage.setScene(new Scene(customerRoot));
+
+            // Fit second monitor exactly
+            customerStage.setX(bounds2.getMinX());
+            customerStage.setY(bounds2.getMinY());
+            customerStage.setWidth(bounds2.getWidth());
+            customerStage.setHeight(bounds2.getHeight());
+
+            customerStage.show();
+
+            stage.setOnCloseRequest(e -> {
+                controller.stopAutoSaveThread();
+                if (custController != null) {
+                    custController.stopPitSyncClock(); // ← add this
+                }
+                Platform.exit();
+                System.exit(0);
+            });
+
+            customerStage.setOnCloseRequest(e -> {
+                controller.stopAutoSaveThread();
+                if (custController != null) {
+                    custController.stopPitSyncClock(); // ← add this
+                }
+                Platform.exit();
+                System.exit(0);
+            });
+        }
     }
 
     public static void main(String[] args) {

@@ -53,6 +53,11 @@
     -fx-background-radius:30px;
 }
 
+.table-cell {
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+}
+
 .label {
     -fx-font-family: "Roboto";
 }

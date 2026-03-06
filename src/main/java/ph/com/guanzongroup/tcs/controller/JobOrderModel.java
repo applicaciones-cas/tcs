@@ -128,6 +128,16 @@ public class JobOrderModel {
         this.index12 = new SimpleStringProperty(Index12);
 
     }
+
+    public JobOrderModel(String Index01, String Index02, String Index03, String Index04
+    ) {
+
+        this.index01 = new SimpleStringProperty(Index01);
+        this.index02 = new SimpleStringProperty(Index02);
+        this.index03 = new SimpleStringProperty(Index03);
+        this.index04 = new SimpleStringProperty(Index04);
+
+    }
     private SimpleStringProperty index01;
     private SimpleStringProperty index02;
     private SimpleStringProperty index03;
