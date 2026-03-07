@@ -80,7 +80,7 @@ public class TCSDashBoardController implements Initializable {
     @FXML
     private ProgressBar pbProgress;
     @FXML
-    private Button btnRetrieve, btnFilter, btnStart, btnPause, btnFinish;
+    private Button btnRetrieve, btnFilter, btnStart, btnPause, btnFinish, btnEOD;
 
     @FXML
     private FontAwesomeIconView iconPause;
@@ -129,18 +129,27 @@ public class TCSDashBoardController implements Initializable {
                 Platform.runLater(() -> {
 
                     try {
+                        if (oTrans.isEOD()) {
+                            ShowMessageFX.Information(getStage(), oTrans.getMessage(), "Information", null);
+
+                            Platform.exit();
+                            System.exit(0);
+                            return;
+                        }
                         if (oTrans.RetrieveJobOrderList()) {
                             loadRecord();
 
                         } else {
                             ShowMessageFX.Information(getStage(), oTrans.getMessage(), "Information", null);
                         }
+
                     } catch (SQLException ex) {
                         Logger.getLogger(TCSDashBoardController.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
                 });
             }
+
             oTrans.setWithUI(true);
 
             initButtonClick();
@@ -180,6 +189,7 @@ public class TCSDashBoardController implements Initializable {
         btnStart.setOnAction(this::cmdButton_Click);
         btnPause.setOnAction(this::cmdButton_Click);
         btnFinish.setOnAction(this::cmdButton_Click);
+        btnEOD.setOnAction(this::cmdButton_Click);
 
     }
 
@@ -394,6 +404,29 @@ public class TCSDashBoardController implements Initializable {
                         ShowMessageFX.Information(getStage(), oTrans.getMessage(), "Information", null);
                     }
                     break;
+
+                case "btnEOD":
+                    if (ShowMessageFX.YesNo(getStage(),
+                            "Are you sure you want to End of Day?\n"
+                            + "EOD will pause all pending transactions and can be resumed the next day.",
+                            "End of Day Confirmation", null)) {
+
+                        if (oTrans.DeclareEOD()) {
+                            stopAutoSaveThread();
+                            if (pitMonitorListener instanceof PITMonitorController) {
+                                ((PITMonitorController) pitMonitorListener).stopPitSyncClock();
+                                ((PITMonitorController) pitMonitorListener).stopMarketingScheduler();
+                            }
+                            ShowMessageFX.Information(getStage(),
+                                    "End of Day has been declared successfully. System will now close.",
+                                    "EOD Complete", null);
+                            Platform.exit();
+                            System.exit(0);
+                        } else {
+                            ShowMessageFX.Information(getStage(), oTrans.getMessage(), "Information", null);
+                        }
+                    }
+                    break;
             }
             startAutoSaveThread();
 
@@ -409,13 +442,12 @@ public class TCSDashBoardController implements Initializable {
         try {
             pnRow = tblJobOrder.getSelectionModel().getSelectedIndex();
             if (pnRow >= 0) {
+                if (oTrans.OpenTransaction(JOList.get(pnRow).getIndex02())) {
+                    loadSelectedTransaction();
 
+                }
             }
 
-            if (oTrans.OpenTransaction(JOList.get(pnRow).getIndex02())) {
-                loadSelectedTransaction();
-
-            }
         } catch (SQLException ex) {
             ShowMessageFX.Warning(getStage(), ex.getMessage(), "Warning", null);
         }

@@ -56,6 +56,15 @@ public class App extends Application {
         Parent parent = view.load();
         Scene scene = new Scene(parent);
 
+        scene.addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, e -> {
+            if (e.getCode() == javafx.scene.input.KeyCode.F4
+                    && e.isAltDown()) {
+                e.consume();
+                ShowMessageFX.Information(stage,
+                        "Please use the End of Day button to exit the application.",
+                        "Exit Not Allowed", null);
+            }
+        });
         stage.setScene(scene);
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setTitle(pxeMainFormTitle);
@@ -71,9 +80,6 @@ public class App extends Application {
                 "/ph/com/guanzongroup/tcs/view/image/app_logotcs.png");
         stage.getIcons().add(new Image(iconStream));
 
-        // Show main stage
-        stage.show();
-
         // Ensure whole app exits when main closes
         Platform.setImplicitExit(true);
         stage.setOnCloseRequest(e -> {
@@ -84,6 +90,8 @@ public class App extends Application {
                             "Exit Not Allowed", null)
             );
         });
+        // Show main stage
+        stage.show();
 
         // =====================================
         // OPEN CUSTOMER DISPLAY (SECOND MONITOR)
@@ -105,14 +113,21 @@ public class App extends Application {
             custController.setJobOrderList(controller.getJobOrderList());
             viewCustomer.setController(custController);
             Parent customerRoot = viewCustomer.load();
-
+            Scene customerScene = new Scene(customerRoot);
             Stage customerStage = new Stage();
+
+            customerScene.addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, e -> {
+                if ((e.getCode() == javafx.scene.input.KeyCode.F4 && e.isAltDown())
+                        || (e.getCode() == javafx.scene.input.KeyCode.SPACE && e.isAltDown())) {
+                    e.consume();
+                }
+            });
             customerStage.initStyle(StageStyle.UNDECORATED);
 
             // Make customer stage owned by main stage → single taskbar icon
             customerStage.initOwner(stage);
 
-            customerStage.setScene(new Scene(customerRoot));
+            customerStage.setScene(customerScene);
 
             // Fit second monitor exactly
             customerStage.setX(bounds2.getMinX());
@@ -120,9 +135,9 @@ public class App extends Application {
             customerStage.setWidth(bounds2.getWidth());
             customerStage.setHeight(bounds2.getHeight());
 
+            customerStage.setOnCloseRequest(e -> e.consume());
             customerStage.show();
 
-            customerStage.setOnCloseRequest(e -> e.consume());
         }
     }
 
