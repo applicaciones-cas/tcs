@@ -27,8 +27,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.AudioClip;
+import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
@@ -51,7 +53,7 @@ public class PITMonitorController implements Initializable, PITMonitorListener {
     private Date pdPeriod = null;
 
     @FXML
-    private AnchorPane mainAnchor, acMainServicePanel;
+    private AnchorPane mainAnchor, acMainServicePanel, acMarketingDisplay;
 
     @FXML
     private AnchorPane acPit;
@@ -71,6 +73,9 @@ public class PITMonitorController implements Initializable, PITMonitorListener {
     private TableColumn tblColQueNo, tblColQueCustomer, tblColQueModel,
             tblColFnhNo, tblColFnhCustomer, tblColFnhModel;
 
+    @FXML
+    private StackPane spCustomerDisplay;
+
     private final ObservableList<JobOrderModel> JOQueueList = FXCollections.observableArrayList();
     private final ObservableList<JobOrderModel> JOFinishList = FXCollections.observableArrayList();
     private ObservableList<JobOrderModel> JOList = FXCollections.observableArrayList();
@@ -83,6 +88,15 @@ public class PITMonitorController implements Initializable, PITMonitorListener {
     private Timeline flashTimeline;
     private Timeline serviceReload;
     private boolean pbIsFlashing = false;
+
+    // Marketing
+    private Timeline marketingScheduler;
+    private Timeline marketingDurationTimer;
+    private javafx.scene.media.MediaPlayer mediaPlayer;
+    private boolean pbMarketingEnabled = false;
+    private int pnMarketingDuration = 30; // seconds, from config
+    private int pnMarketingInterval = 10; // minutes between shows
+    private int pnCurrentMarketingIndex = 0;
 
     private Stage getStage() {
         return (Stage) mainAnchor.getScene().getWindow();
@@ -106,6 +120,7 @@ public class PITMonitorController implements Initializable, PITMonitorListener {
             loadServicePit();
             startPitSyncClock();
             startMainServiceRotation();
+            initMarketing();
 
         });
         pbLoaded = true;
@@ -303,6 +318,10 @@ public class PITMonitorController implements Initializable, PITMonitorListener {
     }
 
     private void loadServicePit() {
+
+        if (JOList == null || JOList.size() <= 0) {
+            return;
+        }
         for (ModelServiceBayController ctrl : ctrlServiceBay) {
             ctrl.setCustomer("");
             ctrl.setMCModel("");
@@ -312,7 +331,6 @@ public class PITMonitorController implements Initializable, PITMonitorListener {
         }
         try {
             System.err.println("Start Adding Job Order to Service PIT");
-            System.err.println("Loop count = " + oTrans.getJobOrderCount());
 
             double lnTotalPit = Double.parseDouble(oTrans.getJOServiceStatus("sTotalPitx").toString());
             double lnOnGoingPit = Double.parseDouble(oTrans.getJOServiceStatus("sOnGoingx").toString());
@@ -582,6 +600,7 @@ public class PITMonitorController implements Initializable, PITMonitorListener {
             case "FINISHED":
                 lsStatusLabel = "RELEASING";
                 lsPitNo = "";
+                hideMarketing();
                 break;
             default:
                 lsStatusLabel = fsAction;
@@ -731,5 +750,198 @@ public class PITMonitorController implements Initializable, PITMonitorListener {
             Logger.getLogger(PITMonitorController.class.getName())
                     .log(Level.WARNING, null, e);
         }
+    }
+//=========================================Marketing Controller START========================================================
+
+    private void initMarketing() {
+        try {
+            // Read config from oTrans
+            Object loEnabled = oTrans.getConfiguration("cEnblMktg").toString();
+            Object loDuration = oTrans.getConfiguration("nMkgtDrtn");
+
+            if (loEnabled == null) {
+                return;
+            }
+
+            pbMarketingEnabled = loEnabled.toString().equals("1");
+            if (!pbMarketingEnabled) {
+
+                spCustomerDisplay.setVisible(true);
+                spCustomerDisplay.setManaged(true);
+                acMarketingDisplay.setVisible(false);
+                acMarketingDisplay.setManaged(false);
+                return;
+            }
+
+            if (loDuration != null) {
+                try {
+                    pnMarketingDuration = (int) (Double.parseDouble(loDuration.toString()) * 60);
+                } catch (NumberFormatException ignored) {
+                    pnMarketingDuration = 60;
+                }
+            }
+
+            // Hide marketing panel initially
+            spCustomerDisplay.setVisible(true);
+            spCustomerDisplay.setManaged(true);
+            acMarketingDisplay.setVisible(false);
+            acMarketingDisplay.setManaged(false);
+
+            // Schedule marketing to show every 10 minutes
+            marketingScheduler = new Timeline(
+                    new KeyFrame(Duration.minutes(pnMarketingInterval), e -> showMarketing())
+            );
+            marketingScheduler.setCycleCount(Animation.INDEFINITE);
+            marketingScheduler.play();
+
+        } catch (SQLException e) {
+            Logger.getLogger(PITMonitorController.class.getName())
+                    .log(Level.WARNING, "Marketing init failed", e);
+        }
+    }
+
+    private void showMarketing() {
+        // Don't interrupt a flash notification
+        if (pbIsFlashing) {
+            return;
+        }
+
+        // Stop pit sync during marketing
+        if (pitSyncClock != null) {
+            pitSyncClock.stop();
+        }
+        if (mainServiceRotateClock != null) {
+            mainServiceRotateClock.stop();
+        }
+
+        // Show the marketing panel
+        acMarketingDisplay.setVisible(true);
+        acMarketingDisplay.setManaged(true);
+        spCustomerDisplay.setVisible(false);
+        spCustomerDisplay.setManaged(false);
+
+        // Pick video to play
+        String lsVideoPath = resolveMarketingVideo();
+        playMarketingVideo(lsVideoPath);
+
+        // Hide after duration expires
+        marketingDurationTimer = new Timeline(
+                new KeyFrame(Duration.seconds(pnMarketingDuration), e -> hideMarketing())
+        );
+        marketingDurationTimer.setCycleCount(1);
+        marketingDurationTimer.play();
+    }
+
+    private String resolveMarketingVideo() {
+        try {
+            // Try to load marketing list
+            if (oTrans.RetrieveMarketing() && oTrans.getMarketingCount() > 0) {
+
+                // Cycle through available marketing entries
+                if (pnCurrentMarketingIndex >= oTrans.getMarketingCount()) {
+                    pnCurrentMarketingIndex = 1;
+                } else {
+                    pnCurrentMarketingIndex++;
+                }
+
+                Object loURL = oTrans.getMarketing(pnCurrentMarketingIndex, "sMktgURLx");
+                if (loURL != null && !loURL.toString().trim().isEmpty()) {
+                    return loURL.toString().trim();
+                }
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(PITMonitorController.class.getName())
+                    .log(Level.WARNING, "Marketing video resolve failed", e);
+        }
+
+        // Fallback to default video
+        java.net.URL defaultUrl = getClass().getResource(
+                "/ph/com/guanzongroup/tcs/view/sound/defaultVideo.mp4");
+        return defaultUrl != null ? defaultUrl.toExternalForm() : null;
+    }
+
+    private void playMarketingVideo(String fsVideoPath) {
+        if (fsVideoPath == null || fsVideoPath.isEmpty()) {
+            return;
+        }
+
+        // Stop any existing player
+        stopMediaPlayer();
+
+        try {
+            System.err.println("This is what Play : " + fsVideoPath);
+            javafx.scene.media.Media media = new javafx.scene.media.Media(fsVideoPath);
+            mediaPlayer = new javafx.scene.media.MediaPlayer(media);
+            mediaPlayer.setAutoPlay(true);
+            mediaPlayer.setCycleCount(javafx.scene.media.MediaPlayer.INDEFINITE);
+
+            // Attach to a MediaView inside acMarketingDisplay
+            // Check if MediaView already exists, else create one
+            MediaView mediaView = null;
+
+            for (javafx.scene.Node node : acMarketingDisplay.getChildren()) {
+                if (node instanceof javafx.scene.media.MediaView) {
+                    mediaView = (MediaView) node;
+                    break;
+                }
+            }
+
+            if (mediaView == null) {
+                mediaView = new MediaView();
+                mediaView.setPreserveRatio(true);
+
+                // Anchor to all 4 sides
+                AnchorPane.setTopAnchor(mediaView, 0.0);
+                AnchorPane.setBottomAnchor(mediaView, 0.0);
+                AnchorPane.setLeftAnchor(mediaView, 0.0);
+                AnchorPane.setRightAnchor(mediaView, 0.0);
+
+                // Bind size explicitly
+                mediaView.fitWidthProperty().bind(acMarketingDisplay.widthProperty());
+                mediaView.fitHeightProperty().bind(acMarketingDisplay.heightProperty());
+
+                acMarketingDisplay.getChildren().add(mediaView);
+            }
+
+            mediaView.setMediaPlayer(mediaPlayer);
+            mediaPlayer.play();
+
+        } catch (Exception e) {
+            Logger.getLogger(PITMonitorController.class.getName())
+                    .log(Level.WARNING, "Video playback failed: " + fsVideoPath, e);
+        }
+    }
+
+    private void hideMarketing() {
+        stopMediaPlayer();
+        spCustomerDisplay.setVisible(true);
+        spCustomerDisplay.setManaged(true);
+        acMarketingDisplay.setVisible(false);
+        acMarketingDisplay.setManaged(false);
+
+        // Resume normal operation
+        pitSyncClock.play();
+        loadServicePit();
+        syncMainServiceWithActivePit();
+        restartMainServiceRotationClock();
+    }
+
+    private void stopMediaPlayer() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
+            mediaPlayer = null;
+        }
+        if (marketingDurationTimer != null) {
+            marketingDurationTimer.stop();
+            marketingDurationTimer = null;
+        }
+    }
+
+    public void stopMarketingScheduler() {
+        if (marketingScheduler != null) {
+            marketingScheduler.stop();
+        }
+        stopMediaPlayer();
     }
 }

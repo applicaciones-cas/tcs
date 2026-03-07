@@ -116,29 +116,48 @@ public class TCSDashBoardController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         oTrans = new JobOrder(oApp, oApp.getBranchCode(), false);
-        oTrans.setWithUI(true);
 
-        initButtonClick();
-        initTableGrid();
-        clearFields();
-
-        loadUserInfo();
-        setAppVersion("V1");
-        getTime();
-        Platform.runLater(() -> {
-            Stage stage = getStage();
-            stage.setOnCloseRequest(e -> stopAutoSaveThread());
-            try {
-                if (oTrans.RetrieveJobOrderList()) {
-                    loadRecord();
-
-                } else {
+        try {
+            if (!oTrans.initialize()) {
+                Platform.runLater(() -> {
                     ShowMessageFX.Information(getStage(), oTrans.getMessage(), "Information", null);
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(TCSDashBoardController.class.getName()).log(Level.SEVERE, null, ex);
+                    System.exit(0);
+
+                });
+            } else {
+                pbLoaded = true;
+                Platform.runLater(() -> {
+
+                    try {
+                        if (oTrans.RetrieveJobOrderList()) {
+                            loadRecord();
+
+                        } else {
+                            ShowMessageFX.Information(getStage(), oTrans.getMessage(), "Information", null);
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(TCSDashBoardController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                });
             }
-        });
+            oTrans.setWithUI(true);
+
+            initButtonClick();
+            initTableGrid();
+            clearFields();
+
+            loadUserInfo();
+            setAppVersion("V1");
+            getTime();
+            Platform.runLater(() -> {
+                Stage stage = getStage();
+                stage.setOnCloseRequest(e -> stopAutoSaveThread());
+
+            });
+        } catch (SQLException ex) {
+            Logger.getLogger(TCSDashBoardController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         pbLoaded = true;
     }
 
@@ -365,10 +384,9 @@ public class TCSDashBoardController implements Initializable {
 
                 case "btnFinish":
                     if (oTrans.FinishService()) {
-                        
+
                         notifyPITMonitor(psTransNox, "FINISHED");
-                        
-                        
+
                         if (oTrans.RetrieveJobOrderList()) {
                             loadRecord();
                         } // ← tag
