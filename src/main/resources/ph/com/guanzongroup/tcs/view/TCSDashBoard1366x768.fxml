@@ -79,15 +79,29 @@
                                                       </AnchorPane>
                                                       <AnchorPane>
                                                          <children>
-                                                            <Button fx:id="btnRetrieve" mnemonicParsing="false" styleClass="button-primary" text="Retrieve" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <Button fx:id="btnRetrieve" mnemonicParsing="false" styleClass="button-primary" text="RETRIEVE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <graphic>
                                                                   <FontAwesomeIconView glyphName="REFRESH" size="15" />
                                                                </graphic>
+                                                               <font>
+                                                                  <Font size="10.0" />
+                                                               </font>
                                                             </Button>
-                                                            <Button fx:id="btnFilter" layoutX="1511.0" layoutY="20.0" mnemonicParsing="false" styleClass="button-primary" text="Remaining" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="0.0">
+                                                            <Button fx:id="btnFilter" layoutX="1511.0" layoutY="20.0" mnemonicParsing="false" styleClass="button-primary" text="REMAINING" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="0.0">
                                                                <graphic>
                                                                   <FontAwesomeIconView glyphName="LIST" size="15" />
                                                                </graphic>
+                                                               <font>
+                                                                  <Font size="10.0" />
+                                                               </font>
+                                                            </Button>
+                                                            <Button fx:id="btnEOD" layoutX="712.0" layoutY="20.0" mnemonicParsing="false" styleClass="button-primary" text="END OF DAY" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="0.0">
+                                                               <graphic>
+                                                                  <FontAwesomeIconView glyphName="SIGN_OUT" size="15" />
+                                                               </graphic>
+                                                               <font>
+                                                                  <Font size="10.0" />
+                                                               </font>
                                                             </Button>
                                                          </children>
                                                          <VBox.margin>
@@ -459,20 +473,29 @@
                                              <children>
                                                 <HBox alignment="CENTER_RIGHT" maxWidth="250.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <children>
-                                                      <Button fx:id="btnStart" mnemonicParsing="false" prefWidth="100.0" styleClass="button-primary" text="START" HBox.hgrow="ALWAYS">
+                                                      <Button fx:id="btnStart" mnemonicParsing="false" prefWidth="110.0" styleClass="button-primary" text="START" HBox.hgrow="ALWAYS">
                                                          <graphic>
-                                                            <FontAwesomeIconView glyphName="PLAY" size="15" />
+                                                            <FontAwesomeIconView glyphName="PLAY" size="12" />
                                                          </graphic>
+                                                         <font>
+                                                            <Font size="10.0" />
+                                                         </font>
                                                       </Button>
-                                                      <Button fx:id="btnPause" layoutX="327.0" layoutY="12.0" mnemonicParsing="false" prefWidth="100.0" styleClass="button-primary" text="PAUSE">
+                                                      <Button fx:id="btnPause" layoutX="327.0" layoutY="12.0" mnemonicParsing="false" prefWidth="110.0" styleClass="button-primary" text="PAUSE">
                                                          <graphic>
-                                                            <FontAwesomeIconView fx:id="iconPause" glyphName="PAUSE" size="15" />
+                                                            <FontAwesomeIconView fx:id="iconPause" glyphName="PAUSE" size="12" />
                                                          </graphic>
+                                                         <font>
+                                                            <Font size="10.0" />
+                                                         </font>
                                                       </Button>
-                                                      <Button fx:id="btnFinish" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefWidth="100.0" styleClass="button-primary" text="FINISH" HBox.hgrow="ALWAYS">
+                                                      <Button fx:id="btnFinish" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefWidth="110.0" styleClass="button-primary" text="FINISH" HBox.hgrow="ALWAYS">
                                                          <graphic>
-                                                            <FontAwesomeIconView glyphName="TAG" size="15" />
+                                                            <FontAwesomeIconView glyphName="TAG" size="12" />
                                                          </graphic>
+                                                         <font>
+                                                            <Font size="10.0" />
+                                                         </font>
                                                       </Button>
                                                    </children>
                                                    <padding>

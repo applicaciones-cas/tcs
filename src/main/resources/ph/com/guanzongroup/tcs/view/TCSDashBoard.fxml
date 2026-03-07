@@ -89,6 +89,11 @@
                                                                   <FontAwesomeIconView glyphName="LIST" size="15" />
                                                                </graphic>
                                                             </Button>
+                                                            <Button fx:id="btnEOD" layoutX="1117.0" layoutY="20.0" mnemonicParsing="false" styleClass="button-primary" text="END OF DAY" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <graphic>
+                                                                  <FontAwesomeIconView glyphName="LIST" size="15" />
+                                                               </graphic>
+                                                            </Button>
                                                          </children>
                                                          <VBox.margin>
                                                             <Insets />

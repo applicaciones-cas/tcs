@@ -187,6 +187,8 @@
 
 .button-primary:hover {
     -fx-background-color: linear-gradient(to bottom right, #66b3ff, #0066cc);
+    
+    -fx-font-size: 12px;
 }
 
 .button-primary:pressed {

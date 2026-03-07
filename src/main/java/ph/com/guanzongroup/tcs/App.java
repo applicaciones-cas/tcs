@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.fxml.FXMLLoader;
 import java.io.InputStream;
+import org.guanzon.appdriver.agent.ShowMessageFX;
 
 import org.guanzon.appdriver.base.GRider;
 import ph.com.guanzongroup.tcs.controller.PITMonitorController;
@@ -76,8 +77,12 @@ public class App extends Application {
         // Ensure whole app exits when main closes
         Platform.setImplicitExit(true);
         stage.setOnCloseRequest(e -> {
-            Platform.exit();   // closes ALL stages
-            System.exit(0);    // guarantees JVM shutdown
+            e.consume(); // ← blocks the close
+            Platform.runLater(()
+                    -> ShowMessageFX.Information(stage,
+                            "Please use the End of Day button to exit the application.",
+                            "Exit Not Allowed", null)
+            );
         });
 
         // =====================================
@@ -117,23 +122,7 @@ public class App extends Application {
 
             customerStage.show();
 
-            stage.setOnCloseRequest(e -> {
-                controller.stopAutoSaveThread();
-                if (custController != null) {
-                    custController.stopPitSyncClock(); // ← add this
-                }
-                Platform.exit();
-                System.exit(0);
-            });
-
-            customerStage.setOnCloseRequest(e -> {
-                controller.stopAutoSaveThread();
-                if (custController != null) {
-                    custController.stopPitSyncClock(); // ← add this
-                }
-                Platform.exit();
-                System.exit(0);
-            });
+            customerStage.setOnCloseRequest(e -> e.consume());
         }
     }
 
