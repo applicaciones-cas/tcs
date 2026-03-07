@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="mainAnchor" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="1350.0" styleClass="pit-body" stylesheets="@../css/PITMonitor.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ph.com.guanzongroup.tcs.controller.ModelServiceBayController">
+   <children>
+      <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label fx:id="lblPit" alignment="CENTER" styleClass="pit-title" text="PIT 1" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <font>
+                  <Font name="System Bold" size="72.0" />
+               </font>
+            </Label>
+            <Label fx:id="lblTimer" alignment="CENTER" maxHeight="240.0" maxWidth="1.7976931348623157E308" styleClass="pit-timer" text="10:00:00" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
+               <font>
+                  <Font name="Courier New Bold" size="200.0" />
+               </font>
+            </Label>
+            <Label fx:id="lblCustomer" alignment="CENTER" styleClass="pit-status" text="Marlon Sayson" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="255.0">
+               <font>
+                  <Font name="System Bold" size="64.0" />
+               </font>
+            </Label>
+            <Label fx:id="lblMCModel" alignment="CENTER" styleClass="pit-status" text="Yamaha X-MAX Turbo" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="325.0">
+               <font>
+                  <Font name="System Bold Italic" size="64.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
