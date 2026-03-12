@@ -209,7 +209,7 @@ public class PITMonitorController implements Initializable, PITMonitorListener {
 
         try {
             FXMLLoader fxLoader;
-            fxLoader = new FXMLLoader(getClass().getResource(pxeFolderView + "/child/PitMonitorServiceBay.fxml"));
+            fxLoader = new FXMLLoader(getClass().getResource(pxeFolderView + "child/PitMonitorServiceBay.fxml"));
             fxLoader.load();
             ModelServiceBayController loController = fxLoader.getController();
 
@@ -246,7 +246,7 @@ public class PITMonitorController implements Initializable, PITMonitorListener {
 
                     FXMLLoader fxLoader = new FXMLLoader(
                             getClass().getResource(
-                                    pxeFolderView + "/child/PitMonitorServiceBayChild.fxml"));
+                                    pxeFolderView + "child/PitMonitorServiceBayChild.fxml"));
                     fxLoader.load();
 
                     ModelServiceBayController loController
